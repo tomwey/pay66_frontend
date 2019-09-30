@@ -16,18 +16,30 @@
             <span slot="title">概况</span>
           </el-menu-item>
           <el-menu-item index="/orders" v-if="has_permission([108])">
-            <i class="iconfont icon-stu2"></i>
+            <i class="iconfont icon-order"></i>
             <span slot="title">订单管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/agents" v-if="has_permission([107])">
-            <i class="iconfont icon-class2"></i>
-            <span slot="title">业务团队</span>
-          </el-menu-item>
+          <el-submenu index="/agents" v-if="has_permission([101,102])">
+            <template slot="title">
+              <i class="iconfont icon-agent2"></i>
+              <span slot="title">业务团队</span>
+            </template>
+
+            <el-menu-item index="/agents/configs" v-if="has_permission([101])">
+              <i class="iconfont icon-earn_config2"></i>
+              <span slot="title">提成配置</span>
+            </el-menu-item>
+
+            <el-menu-item index="/merchants/accounts" v-if="has_permission([101])">
+              <i class="iconfont icon-list"></i>
+              <span slot="title">账号列表</span>
+            </el-menu-item>
+          </el-submenu>
 
           <el-submenu index="/merchants" v-if="has_permission([101,102])">
             <template slot="title">
-              <i class="iconfont icon-school"></i>
+              <i class="iconfont icon-merchant"></i>
               <span slot="title">商家管理</span>
             </template>
 
@@ -37,33 +49,33 @@
             </el-menu-item>
 
             <el-menu-item index="/merchants/authorizes" v-if="has_permission([101])">
-              <i class="iconfont icon-list"></i>
+              <i class="iconfont icon-authorize"></i>
               <span slot="title">商家授权</span>
             </el-menu-item>
 
             <el-menu-item index="/merchants/categories" v-if="has_permission([102])">
-              <i class="iconfont icon-loc"></i>
+              <i class="iconfont icon-category"></i>
               <span slot="title">经营类别</span>
             </el-menu-item>
 
             <el-menu-item index="/merchants/accounts" v-if="has_permission([103])">
-              <i class="iconfont icon-school"></i>
+              <i class="iconfont icon-account"></i>
               <span slot="title">员工账号</span>
             </el-menu-item>
           </el-submenu>
 
           <el-menu-item index="/merchants/shops" v-if="has_permission([103])">
-            <i class="iconfont icon-school"></i>
+            <i class="iconfont icon-shop"></i>
             <span slot="title">门店管理</span>
           </el-menu-item>
 
           <el-menu-item index="/devices" v-if="has_permission([107])">
-            <i class="iconfont icon-class2"></i>
+            <i class="iconfont icon-device"></i>
             <span slot="title">设备管理</span>
           </el-menu-item>
 
           <el-menu-item index="/users" v-if="has_permission([108])">
-            <i class="iconfont icon-stu2"></i>
+            <i class="iconfont icon-membership"></i>
             <span slot="title">会员管理</span>
           </el-menu-item>
 
@@ -73,7 +85,7 @@
           </el-menu-item>-->
 
           <el-menu-item index="/stats" v-if="has_permission([108])">
-            <i class="iconfont icon-stu2"></i>
+            <i class="iconfont icon-stat"></i>
             <span slot="title">数据中心</span>
           </el-menu-item>
 
@@ -87,7 +99,7 @@
             <span slot="title">账号管理</span>
           </el-menu-item>
           <el-menu-item index="/configs" v-if="has_permission(106)">
-            <i class="iconfont icon-account"></i>
+            <i class="iconfont icon-sys_config"></i>
             <span slot="title">系统设置</span>
           </el-menu-item>
 
