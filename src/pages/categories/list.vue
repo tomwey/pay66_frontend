@@ -1,9 +1,9 @@
 <template>
   <div class="list-wrapper" v-loading="loading">
     <div class="title-bar">
-      <h3 class="title">班级列表</h3>
+      <h3 class="title">类别列表</h3>
       <div class="buttons" v-if="$hasPermission(107,1002)">
-        <el-button type="primary" @click="openForm">添加班级</el-button>
+        <el-button type="primary" @click="openForm">添加类别</el-button>
       </div>
     </div>
     <search-controls :controls="searchControls" @search="loadData"></search-controls>
@@ -18,24 +18,10 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column label="ID" prop="id" align="center" width="80"></el-table-column>
         <el-table-column label="名字" prop="name" align="center" width="120"></el-table-column>
-        <el-table-column label="班主任" prop="teacher_name" align="center" width="80"></el-table-column>
-        <el-table-column label="所在校区" prop="school_name" align="center" width="120"></el-table-column>
-        <el-table-column label="学习课程" width="180">
-          <template slot-scope="scope">
-            <div class="course" v-for="(item,index) in scope.row.courses" :key="index">{{item.name}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="学生人数" sortable prop="students_count" align="center" width="120"></el-table-column>
-        <el-table-column label="开班日期" prop="found_on" align="center" width="120"></el-table-column>
-        <el-table-column label="班级微信/QQ群" width="180">
-          <template slot-scope="scope">
-            微信号: {{scope.row.wechat}}
-            <br />
-            QQ号: {{scope.row.qq}}
-          </template>
-        </el-table-column>
-        <el-table-column label="备注" prop="memo" align="center" width="120"></el-table-column>
-        <el-table-column label="创建时间" prop="create_time" width="99"></el-table-column>
+        <el-table-column label="父类别" prop="parent.name" align="center" width="120"></el-table-column>
+        <el-table-column label="排序" prop="sort" align="center" width="60"></el-table-column>
+        <el-table-column label="备注" prop="memo"></el-table-column>
+        <el-table-column label="创建时间" prop="create_time"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center" width="150">
           <template slot-scope="scope">
             <el-button
@@ -80,7 +66,7 @@
     </div>
     <!-- 表单 -->
     <el-dialog
-      :title="isAdd ? '添加班级' : '修改班级'"
+      :title="isAdd ? '添加类别' : '修改类别'"
       :visible.sync="isShow"
       width="580px"
       :append-to-body="true"
@@ -98,13 +84,13 @@
   </div>
 </template>
 <script>
-import { MobileCheck } from "@/components/CommForm/validators";
+// import { MobileCheck } from "@/components/CommForm/validators";
 
 export default {
   name: "list",
   components: {
     commForm: resolve => require(["@/components/CommForm"], resolve),
-    stateTag: resolve => require(["@/components/state-tag"], resolve),
+    // stateTag: resolve => require(["@/components/state-tag"], resolve),
     searchControls: resolve => require(["@/components/SearchControls"], resolve)
   },
   data() {
@@ -121,29 +107,6 @@ export default {
           label: "名字",
           field: "name",
           op: "lk"
-        },
-        {
-          type: 2,
-          label: "班主任",
-          field: "teacher_id",
-          options: []
-        },
-        {
-          type: 2,
-          label: "所在校区",
-          field: "school_id",
-          options: []
-        },
-        {
-          type: 2,
-          label: "学习课程",
-          field: "__assoc_course_id",
-          options: []
-        },
-        {
-          type: 72,
-          label: "开班日期",
-          field: "found_on"
         },
         {
           type: 72,
@@ -169,46 +132,17 @@ export default {
           rules: [{ required: true, message: "名字不能为空", trigger: "blur" }]
         },
         {
-          label: "班主任",
-          field: "teacher_id",
+          label: "父类别",
+          field: "pid",
           type: 2,
           options: [],
-          rules: [
-            { required: true, message: "班主任不能为空", trigger: "change" }
-          ]
+          rules: []
         },
         {
-          label: "所属校区",
-          field: "school_id",
-          type: 2,
-          options: [],
-          rules: [
-            { required: true, message: "所属校区不能为空", trigger: "change" }
-          ]
-        },
-        {
-          label: "学习课程",
-          field: "course_ids",
-          type: 4,
-          options: [],
-          rules: [
-            { required: true, message: "学习课程不能为空", trigger: "change" }
-          ]
-        },
-        {
-          label: "开班日期",
-          field: "found_on",
-          type: 7
-        },
-        {
-          label: "班级QQ群",
-          field: "qq",
-          type: 1
-        },
-        {
-          label: "班级微信群",
-          field: "wechat",
-          type: 1
+          label: "显示顺序",
+          field: "sort",
+          type: 1,
+          subtype: "number"
         },
         {
           label: "备注",
@@ -223,51 +157,9 @@ export default {
   watch: {},
   mounted() {
     this.loadData();
-    this.loadSchools();
-    this.loadCourses();
-    this.loadTeachers();
+    // this.loadCategories();
   },
   methods: {
-    loadTeachers() {
-      this.$get(
-        "admin/common/teacher/list",
-        { conds: JSON.stringify([{ k: "_type", op: "=", v: 1 }]) },
-        res => {
-          if (res.code == 0) {
-            let temp = [];
-            res.data.forEach(ele => {
-              temp.push({ label: ele.name, value: ele.id });
-            });
-            this.controls[1].options = temp;
-            this.searchControls[1].options = temp;
-          }
-        }
-      );
-    },
-    loadSchools() {
-      this.$get("admin/common/school/list", null, res => {
-        if (res.code == 0) {
-          let temp = [];
-          res.data.forEach(ele => {
-            temp.push({ label: ele.name, value: ele.id });
-          });
-          this.controls[2].options = temp;
-          this.searchControls[2].options = temp;
-        }
-      });
-    },
-    loadCourses() {
-      this.$get("admin/common/course/list", null, res => {
-        if (res.code == 0) {
-          let temp = [];
-          res.data.forEach(ele => {
-            temp.push({ label: ele.name, value: ele.id });
-          });
-          this.controls[3].options = temp;
-          this.searchControls[3].options = temp;
-        }
-      });
-    },
     loadData(conds = []) {
       this.conds = conds || [];
       this.loading = true;
@@ -279,7 +171,7 @@ export default {
         params.conds = JSON.stringify(this.conds);
       }
 
-      this.$get("admin/common/sys_class/list", params, res => {
+      this.$get("admin/common/category/list", params, res => {
         // console.log(res);
         this.loading = false;
         if (res.code == 0) {
@@ -289,15 +181,36 @@ export default {
       });
       // console.log(this.pager.page);
     },
+    loadCategories() {
+      this.$get(
+        "admin/common/category/list",
+        {
+          conds: JSON.stringify([
+            { k: "id", op: "not", v: this.formData.id || "" }
+          ])
+        },
+        res => {
+          // console.log(res);
+          this.loading = false;
+          if (res.code == 0) {
+            // this.list = res.data;
+            // this.pager.totalSize = res.total || 0;
+            let temp = [];
+            res.data.forEach(ele => {
+              temp.push({ label: ele.name, value: ele.id });
+            });
+            this.controls[1].options = temp;
+          }
+        }
+      );
+    },
     search() {
       this.loadData();
     },
     handleSelectionChange(rows) {},
     openForm(type) {
-      this.formData = { course_ids: [] };
-      this.loadTeachers();
-      this.loadSchools();
-      this.loadCourses();
+      this.formData = {};
+      this.loadCategories();
       this.isAdd = true;
       this.isShow = true;
     },
@@ -307,9 +220,8 @@ export default {
     },
     editItem(item) {
       this.formData = Object.assign({}, item);
-      this.loadTeachers();
-      this.loadSchools();
-      this.loadCourses();
+      this.formData.pid = this.formData.parent.id;
+      this.loadCategories();
       this.isAdd = false;
       this.isShow = true;
     },
@@ -321,7 +233,7 @@ export default {
       })
         .then(() => {
           this.loading = true;
-          this.$post("admin/common/sys_class/delete", { ids: item.id }, res => {
+          this.$post("admin/common/category/delete", { ids: item.id }, res => {
             this.loading = false;
             if (res.code == 0) {
               this.$message({
@@ -335,19 +247,6 @@ export default {
         })
         .catch();
     },
-    openItem(item, flag) {
-      this.loading = true;
-      this.$post(
-        "admin/common/sys_class/open_or_close",
-        { ids: item.id, state: flag ? 1 : 0 },
-        res => {
-          this.loading = false;
-          if (res.code == 0) {
-            item.opened = flag;
-          }
-        }
-      );
-    },
     commit() {
       this.$refs.commForm.validateFields(valid => {
         if (valid) {
@@ -358,7 +257,7 @@ export default {
     doCommit() {
       this.commiting = true;
       this.$post(
-        "admin/common/sys_class/save",
+        "admin/common/category/save",
         {
           id: this.formData.id,
           payload: JSON.stringify(this.formData)

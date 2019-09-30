@@ -37,6 +37,11 @@
             </el-menu-item>
           </el-submenu>
 
+          <el-menu-item index="/categories" v-if="has_permission([102])">
+            <i class="iconfont icon-category"></i>
+            <span slot="title">经营类别</span>
+          </el-menu-item>
+
           <el-submenu index="/merchants" v-if="has_permission([101,102])">
             <template slot="title">
               <i class="iconfont icon-merchant"></i>
@@ -51,11 +56,6 @@
             <el-menu-item index="/merchants/authorizes" v-if="has_permission([101])">
               <i class="iconfont icon-authorize"></i>
               <span slot="title">商家授权</span>
-            </el-menu-item>
-
-            <el-menu-item index="/merchants/categories" v-if="has_permission([102])">
-              <i class="iconfont icon-category"></i>
-              <span slot="title">经营类别</span>
             </el-menu-item>
 
             <el-menu-item index="/merchants/accounts" v-if="has_permission([103])">

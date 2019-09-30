@@ -56,12 +56,12 @@ export const constantRouterMap = [
                         component: () => import('@/pages/schools/classrooms'),
                         meta: { title: '商家授权' }
                     },
-                    {
-                        path: 'categories',
-                        name: 'categories',
-                        component: () => import('@/pages/schools/classrooms'),
-                        meta: { title: '经营类别' }
-                    },
+                    // {
+                    //     path: 'categories',
+                    //     name: 'categories',
+                    //     component: () => import('@/pages/schools/classrooms'),
+                    //     meta: { title: '经营类别' }
+                    // },
                     {
                         path: 'accounts',
                         name: 'accounts',
@@ -93,6 +93,18 @@ export const constantRouterMap = [
                         component: () => import('@/pages/stats/index'),
                         meta: { title: '提成配置' }
                     }
+                ]
+            },
+            {
+                path: 'categories',
+                component: () => import('@/pages/categories/index'),
+                children: [
+                    {
+                        path: '',
+                        name: 'category-list',
+                        component: () => import('@/pages/categories/list'),
+                        meta: { title: '类别列表' },
+                    },
                 ]
             },
             {
