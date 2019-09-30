@@ -25,9 +25,10 @@
               <el-tag type="danger">超级管理员</el-tag>
             </span>
             <div v-if="!scope.row.is_admin">
-              <span v-for="role in scope.row.roles" :key="role.id">
+              <!-- <span v-for="role in scope.row.roles" :key="role.id">
                 <el-tag>{{role.name}}</el-tag>
-              </span>
+              </span>-->
+              <el-tag>{{scope.row.role_name}}</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -198,7 +199,8 @@ export default {
           this.loadData(this.conds);
         }
       },
-      controls: [
+      controls: [],
+      controls1: [
         {
           label: "账号名字",
           field: "name",
@@ -238,11 +240,39 @@ export default {
         },
         {
           label: "角色",
-          field: "role_ids",
-          type: 4,
+          field: "role",
+          type: 3,
           options: [],
           rules: [
-            { required: true, message: "至少设置1个角色", trigger: "change" }
+            { required: true, message: "角色不能为空", trigger: "change" }
+          ]
+        }
+      ],
+      controls2: [
+        {
+          label: "账号名字",
+          field: "name",
+          type: 1,
+          rules: [
+            { required: true, message: "账号名字不能为空", trigger: "blur" }
+          ]
+        },
+        {
+          label: "登录手机",
+          field: "mobile",
+          type: 1,
+          rules: [
+            { required: true, message: "登录手机不能为空", trigger: "blur" },
+            { validator: MobileCheck, trigger: "change" }
+          ]
+        },
+        {
+          label: "角色",
+          field: "role",
+          type: 3,
+          options: [],
+          rules: [
+            { required: true, message: "角色不能为空", trigger: "change" }
           ]
         }
       ],
@@ -263,9 +293,11 @@ export default {
       params.page = this.pager.page;
       params.size = this.pager.pageSize;
 
-      if (this.conds.length > 0) {
-        params.conds = JSON.stringify(this.conds);
-      }
+      let temp = [{ k: "__assoc_type", op: "=", v: 1 }];
+      // if (this.conds.length > 0) {
+      params.conds = JSON.stringify(this.conds.concat(temp));
+      // } else {
+      // }
 
       this.$get("admin/common/account/list", params, res => {
         // console.log(res);
@@ -282,7 +314,8 @@ export default {
     },
     handleSelectionChange(rows) {},
     openForm(type) {
-      this.formData = { role_ids: [] };
+      this.controls = this.controls1;
+      this.formData = {};
       this.isAdd = true;
       this.isShow = true;
       this.loadRoles();
@@ -292,64 +325,17 @@ export default {
       this.$refs.commForm && this.$refs.commForm.clearValidates();
     },
     editItem(item) {
+      // console.log(item);
       this.formData = Object.assign({}, item);
-
+      this.formData.role = this.formData.role.toString();
       // this.formData["show_cases"] = ids.join(",");
 
       this.isAdd = false;
       this.isShow = true;
-      if (!item.is_admin) {
-        this.controls = [
-          {
-            label: "账号名字",
-            field: "name",
-            type: 1,
-            rules: [
-              { required: true, message: "账号名字不能为空", trigger: "blur" }
-            ]
-          },
-          {
-            label: "登录手机",
-            field: "mobile",
-            type: 1,
-            rules: [
-              { required: true, message: "登录手机不能为空", trigger: "blur" },
-              { validator: MobileCheck, trigger: "change" }
-            ]
-          },
-          {
-            label: "角色",
-            field: "role_ids",
-            type: 4,
-            options: [],
-            rules: [
-              { required: true, message: "至少设置1个角色", trigger: "change" }
-            ]
-          }
-        ];
-        this.loadRoles();
-      } else {
-        // this.controls.splice(this.controls.length - 1, 1);
-        this.controls = [
-          {
-            label: "账号名字",
-            field: "name",
-            type: 1,
-            rules: [
-              { required: true, message: "账号名字不能为空", trigger: "blur" }
-            ]
-          },
-          {
-            label: "登录手机",
-            field: "mobile",
-            type: 1,
-            rules: [
-              { required: true, message: "登录手机不能为空", trigger: "blur" },
-              { validator: MobileCheck, trigger: "change" }
-            ]
-          }
-        ];
-      }
+
+      this.controls = this.controls2;
+
+      this.loadRoles();
 
       // this.loadTags();
       // this.loadSchools();
@@ -358,16 +344,16 @@ export default {
     },
     loadRoles() {
       this.loading = true;
-      this.$get("admin/common/role/list", null, res => {
+      this.$get("admin/configs/comp_roles", null, res => {
         // console.log(res);
         this.loading = false;
         if (res.code == 0) {
           const control = this.controls[this.controls.length - 1];
-          const temp = [];
-          res.data.forEach(ele => {
-            temp.push({ label: ele.name, value: ele.id });
-          });
-          control.options = temp;
+          // const temp = [];
+          // res.data.forEach(ele => {
+          //   temp.push({ label: ele.name, value: ele.id });
+          // });
+          control.options = res.data;
         }
       });
     },

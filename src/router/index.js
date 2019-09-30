@@ -80,11 +80,12 @@ export const constantRouterMap = [
                 path: 'agents',
                 // name: 'top-agents',
                 component: () => import('@/pages/agents/index'),
-                meta: { title: '业务团队' },
+                // meta: { title: '业务团队' },
                 children: [
                     {
                         path: '',
                         name: 'agent-list',
+                        meta: { title: '业务团队' },
                         component: () => import('@/pages/agents/list'),
                     },
                     {

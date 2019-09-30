@@ -31,7 +31,7 @@
               <span slot="title">提成配置</span>
             </el-menu-item>
 
-            <el-menu-item index="/merchants/accounts" v-if="has_permission([101])">
+            <el-menu-item index="/agents" v-if="has_permission([101])">
               <i class="iconfont icon-list"></i>
               <span slot="title">人员列表</span>
             </el-menu-item>
