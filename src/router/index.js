@@ -79,18 +79,18 @@ export const constantRouterMap = [
             {
                 path: 'agents',
                 // name: 'top-agents',
-                component: () => import('@/pages/stats/index'),
+                component: () => import('@/pages/agents/index'),
                 meta: { title: '业务团队' },
                 children: [
                     {
                         path: '',
                         name: 'agent-list',
-                        component: () => import('@/pages/stats/index'),
+                        component: () => import('@/pages/agents/list'),
                     },
                     {
                         path: 'configs',
                         name: 'configs',
-                        component: () => import('@/pages/stats/index'),
+                        component: () => import('@/pages/agents/configs'),
                         meta: { title: '提成配置' }
                     }
                 ]

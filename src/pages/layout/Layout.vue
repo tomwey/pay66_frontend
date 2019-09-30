@@ -33,7 +33,7 @@
 
             <el-menu-item index="/merchants/accounts" v-if="has_permission([101])">
               <i class="iconfont icon-list"></i>
-              <span slot="title">账号列表</span>
+              <span slot="title">人员列表</span>
             </el-menu-item>
           </el-submenu>
 
