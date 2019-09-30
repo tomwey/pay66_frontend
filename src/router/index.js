@@ -41,19 +41,19 @@ export const constantRouterMap = [
             {
                 path: 'merchants',
                 // name: 'schools',
-                component: () => import('@/pages/schools/index'),
+                component: () => import('@/pages/merchants/index'),
                 // meta: { title: '校区管理' },
                 children: [
                     {
                         path: '',
                         name: 'merchant-list',
-                        component: () => import('@/pages/schools/list'),
+                        component: () => import('@/pages/merchants/list'),
                         meta: { title: '商家列表' },
                     },
                     {
                         path: 'authorizes',
                         name: 'authorizes',
-                        component: () => import('@/pages/schools/classrooms'),
+                        component: () => import('@/pages/merchants/authorizes'),
                         meta: { title: '商家授权' }
                     },
                     // {
@@ -65,7 +65,7 @@ export const constantRouterMap = [
                     {
                         path: 'accounts',
                         name: 'accounts',
-                        component: () => import('@/pages/schools/classrooms'),
+                        component: () => import('@/pages/merchants/accounts'),
                         meta: { title: '员工账号' }
                     },
                     // {

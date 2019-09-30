@@ -1,9 +1,9 @@
 <template>
   <div class="list-wrapper" v-loading="loading">
     <div class="title-bar">
-      <h3 class="title">加盟商列表</h3>
+      <h3 class="title">商家列表</h3>
       <div class="buttons" v-if="$hasPermission(100,1002)">
-        <el-button type="primary" @click="openForm">添加加盟机构</el-button>
+        <el-button type="primary" @click="openForm">添加商家</el-button>
       </div>
     </div>
     <search-controls :controls="searchControls" @search="loadData"></search-controls>
@@ -23,7 +23,7 @@
             <p class="name">{{scope.row.brand}}</p>
           </template>
         </el-table-column>
-        <el-table-column label="公司名字" align="center" width="80">
+        <el-table-column label="名字" align="center" width="80">
           <template slot-scope="scope">
             <!-- <a
               href="javascript:;"
@@ -38,10 +38,18 @@
           </template>
         </el-table-column>
         <el-table-column label="联系人手机" prop="mobile" align="center" width="120"></el-table-column>
-        <el-table-column label="营业执照" align="center" width="180">
+        <!-- <el-table-column label="营业执照" align="center" width="180">
           <template slot-scope="scope">
             <img :src="scope.row.license_image_url" style="max-width: 100%;" />
             <p class="name">{{scope.row.license_no}}</p>
+          </template>
+        </el-table-column>-->
+        <el-table-column label="授权二维码" align="center" width="180">
+          <template slot-scope="scope">
+            <div class="auth-box" v-for="qrcode in scope.row.auth_qrcodes" :key="qrcode.name">
+              <img :src="qrcode.qrcode" style="width: 100%" />
+              <a :href="qrcode.url">{{qrcode.name}}</a>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="超级管理员" width="180">
@@ -51,10 +59,10 @@
             登录手机: {{scope.row.admin && scope.row.admin.mobile}}
           </template>
         </el-table-column>
-        <el-table-column label="公司地址" prop="address" align="center" width="150"></el-table-column>
+        <el-table-column label="地址" prop="address" align="center" width="150"></el-table-column>
         <el-table-column label="账户余额(元)" sortable prop="_balance" align="center" width="150"></el-table-column>
         <el-table-column label="注册时间" prop="create_time" width="99"></el-table-column>
-        <el-table-column label="账号状态" width="99">
+        <el-table-column label="状态" width="99">
           <template slot-scope="scope">
             <state-tag
               :type="scope.row.opened ? 'success' : 'danger'"
@@ -111,7 +119,7 @@
 
     <!-- 表单 -->
     <el-dialog
-      :title="isAdd ? '添加加盟机构' : '修改加盟机构'"
+      :title="isAdd ? '添加商家' : '修改商家'"
       :visible.sync="isShow"
       width="580px"
       :append-to-body="true"
@@ -171,7 +179,7 @@ export default {
       searchControls: [
         {
           type: 1,
-          label: "公司名字",
+          label: "名字",
           field: "name",
           op: "like"
         },
@@ -230,12 +238,10 @@ export default {
       },
       controls: [
         {
-          label: "公司名字",
+          label: "名字",
           field: "name",
           type: 1,
-          rules: [
-            { required: true, message: "公司名字不能为空", trigger: "blur" }
-          ]
+          rules: [{ required: true, message: "名字不能为空", trigger: "blur" }]
         },
         {
           label: "品牌名字",
@@ -247,7 +253,7 @@ export default {
         },
         {
           label: "LOGO",
-          field: "logo_id",
+          field: "logo",
           type: 8,
           accept: ".jpg,.png,.gif,.jpeg",
           rules: [{ required: true, message: "LOGO不能为空", trigger: "blur" }]
@@ -266,7 +272,7 @@ export default {
         },
         {
           label: "营业执照",
-          field: "license_image_id",
+          field: "license_image",
           type: 8,
           accept: ".jpg,.png,.gif,.jpeg",
           rules: [
@@ -451,7 +457,7 @@ export default {
       if (this.conds.length > 0) {
         params.conds = JSON.stringify(this.conds);
       }
-      this.$get("admin/common/company/list", params, res => {
+      this.$get("admin/common/merchant/list", params, res => {
         // console.log(res);
         this.loading = false;
         if (res.code == 0) {
@@ -480,6 +486,7 @@ export default {
     },
     createClass() {},
     editItem(item) {
+      console.log(item);
       this.formData = Object.assign({}, item);
 
       this.formData2 = Object.assign({}, item.admin);
@@ -497,7 +504,7 @@ export default {
       })
         .then(() => {
           this.loading = true;
-          this.$post("admin/common/company/delete", { ids: item.id }, res => {
+          this.$post("admin/common/merchant/delete", { ids: item.id }, res => {
             this.loading = false;
             if (res.code == 0) {
               this.$message({
@@ -513,7 +520,7 @@ export default {
     openItem(item, flag) {
       this.loading = true;
       this.$post(
-        "admin/common/company/open_or_close",
+        "admin/common/merchant/open_or_close",
         { ids: item.id, state: flag ? 1 : 0 },
         res => {
           this.loading = false;
@@ -566,7 +573,7 @@ export default {
       params["admin"] = Object.assign({}, this.formData2);
 
       this.$post(
-        "admin/common/company/save",
+        "admin/common/merchant/save",
         {
           id: this.formData.id,
           payload: JSON.stringify(params)
@@ -606,5 +613,13 @@ export default {
 // .page-container {
 //   text-align: center;
 // }
+.auth-box {
+  border: 1px dashed #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
 </style>
 
