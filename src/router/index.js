@@ -77,6 +77,18 @@ export const constantRouterMap = [
                 ]
             },
             {
+                path: 'shops',
+                component: () => import('@/pages/shops/index'),
+                children: [
+                    {
+                        path: '',
+                        name: 'shop-list',
+                        component: () => import('@/pages/shops/list'),
+                        meta: { title: '门店列表' },
+                    },
+                ]
+            },
+            {
                 path: 'agents',
                 // name: 'top-agents',
                 component: () => import('@/pages/agents/index'),

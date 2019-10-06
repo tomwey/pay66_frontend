@@ -64,7 +64,7 @@
             </el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="/merchants/shops" v-if="has_permission([103])">
+          <el-menu-item index="/shops" v-if="has_permission([103])">
             <i class="iconfont icon-shop"></i>
             <span slot="title">门店管理</span>
           </el-menu-item>
