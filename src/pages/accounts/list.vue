@@ -160,7 +160,7 @@ export default {
         },
         {
           type: 1,
-          label: "账号名字",
+          label: "登录手机",
           field: "mobile",
           op: "lk"
         },
