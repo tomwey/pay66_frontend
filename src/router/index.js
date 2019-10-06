@@ -56,12 +56,6 @@ export const constantRouterMap = [
                         component: () => import('@/pages/merchants/authorizes'),
                         meta: { title: '商家授权' }
                     },
-                    // {
-                    //     path: 'categories',
-                    //     name: 'categories',
-                    //     component: () => import('@/pages/schools/classrooms'),
-                    //     meta: { title: '经营类别' }
-                    // },
                     {
                         path: 'accounts',
                         name: 'accounts',
@@ -142,9 +136,7 @@ export const constantRouterMap = [
                 children: [
                     {
                         path: '',
-                        // name: 'parents-list',
                         component: () => import('@/pages/stats/list'),
-                        // meta: { title: '项目管理' },
                     },
                 ]
             },
@@ -156,9 +148,7 @@ export const constantRouterMap = [
                 children: [
                     {
                         path: '',
-                        // name: 'parents-list',
                         component: () => import('@/pages/stats/list'),
-                        // meta: { title: '项目管理' },
                     },
                 ]
             },
@@ -170,9 +160,7 @@ export const constantRouterMap = [
                 children: [
                     {
                         path: '',
-                        // name: 'parents-list',
                         component: () => import('@/pages/stats/list'),
-                        // meta: { title: '项目管理' },
                     },
                 ]
             },
@@ -184,58 +172,22 @@ export const constantRouterMap = [
                 children: [
                     {
                         path: '',
-                        // name: 'parents-list',
                         component: () => import('@/pages/messages/list'),
-                        // meta: { title: '项目管理' },
                     },
                 ]
             },
             {
                 path: 'configs',
                 name: 'configs',
-                component: () => import('@/pages/messages/index'),
+                component: () => import('@/pages/sys_configs/index'),
                 meta: { title: '系统设置' },
                 children: [
                     {
                         path: '',
-                        // name: 'parents-list',
-                        component: () => import('@/pages/messages/list'),
-                        // meta: { title: '项目管理' },
+                        component: () => import('@/pages/sys_configs/list'),
                     },
                 ]
             },
-            // {
-            //     path: 'accounts',
-            //     // name: 'accounts',
-            //     component: () => import('@/pages/accounts/index'),
-            //     meta: { title: '账号管理' },
-            //     children: [
-            //         {
-            //             path: '',
-            //             name: 'account-list',
-            //             component: () => import('@/pages/accounts/list'),
-            //             // meta: { title: '项目管理' },
-            //         },
-            //         {
-            //             path: 'new',
-            //             name: 'new-account',
-            //             component: () => import('@/pages/accounts/form'),
-            //             meta: { title: '新建账号' }
-            //         },
-            //         {
-            //             path: 'edit',
-            //             name: 'edit-account',
-            //             component: () => import('@/pages/accounts/form'),
-            //             meta: { title: '编辑账号' }
-            //         },
-            //         // {
-            //         //     path: 'change_pwd',
-            //         //     name: 'change-pwd',
-            //         //     component: () => import('@/pages/password'),
-            //         //     meta: { title: '修改密码' }
-            //         // }
-            //     ]
-            // },
             {
                 path: 'accounts',
                 component: () => import('@/pages/accounts/index'),
