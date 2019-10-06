@@ -131,24 +131,24 @@ export const constantRouterMap = [
             {
                 path: 'orders',
                 name: 'orders',
-                component: () => import('@/pages/stats/index'),
+                component: () => import('@/pages/orders/index'),
                 meta: { title: '订单列表' },
                 children: [
                     {
                         path: '',
-                        component: () => import('@/pages/stats/list'),
+                        component: () => import('@/pages/orders/list'),
                     },
                 ]
             },
             {
                 path: 'users',
                 name: 'users',
-                component: () => import('@/pages/stats/index'),
+                component: () => import('@/pages/users/index'),
                 meta: { title: '会员列表' },
                 children: [
                     {
                         path: '',
-                        component: () => import('@/pages/stats/list'),
+                        component: () => import('@/pages/users/list'),
                     },
                 ]
             },
