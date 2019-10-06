@@ -37,6 +37,7 @@
             >{{scope.row.name}}</a>
           </template>
         </el-table-column>
+        <el-table-column label="所属业务人员" prop="from_man.name" align="center" width="120"></el-table-column>
         <el-table-column label="联系人手机" prop="mobile" align="center" width="120"></el-table-column>
         <!-- <el-table-column label="营业执照" align="center" width="180">
           <template slot-scope="scope">
@@ -259,6 +260,19 @@ export default {
           rules: [{ required: true, message: "LOGO不能为空", trigger: "blur" }]
         },
         {
+          label: "所属业务人员",
+          field: "from_account_id",
+          type: 2,
+          options: [],
+          rules: [
+            {
+              required: true,
+              message: "所属业务人员不能为空",
+              trigger: "change"
+            }
+          ]
+        },
+        {
           label: "统一社会信用代码",
           field: "license_no",
           type: 1,
@@ -393,59 +407,16 @@ export default {
   watch: {},
   mounted() {
     this.loadData();
+    console.log(this.$store.state.user);
+    if (
+      this.$store.state.user &&
+      this.$store.state.user.role &&
+      (this.$store.state.user.role === 4 || this.$store.state.user.role === 8)
+    ) {
+      this.$set(this.formData, "from_account_id", this.$store.state.user.id);
+    }
   },
   methods: {
-    bindParents(stu) {
-      this.parentsDialogVisible = true;
-      this.currStudent = stu;
-    },
-    didSelect(val) {
-      // console.log(val);
-      this.selectedParents = Object.assign([], val);
-    },
-    bind() {
-      // console.log(this.selectedParents);
-
-      let ids = [];
-      this.selectedParents.forEach(sp => {
-        ids.push(sp.id);
-      });
-
-      if (!this.currStudent || ids.length == 0) return;
-
-      this.commiting = true;
-      this.$post(
-        "admin/students/" + this.currStudent.id + "/bind_parents",
-        { pids: ids },
-        res => {
-          this.commiting = false;
-          if (res.code == 0) {
-            this.$message({
-              type: "success",
-              message: "绑定成功！"
-            });
-            this.parentsDialogVisible = false;
-            setTimeout(() => {
-              this.pager.page = 1;
-              this.loadData();
-            }, 20);
-          } else {
-          }
-        }
-      );
-    },
-    getParentsInfo(stu) {
-      var html = "";
-      stu.parents.forEach(p => {
-        html += `<p>${p.name} ${p.mobile}</p>`;
-      });
-      return html;
-    },
-    showDetail(item) {
-      sessionStorage.setItem("item", JSON.stringify(item));
-      this.$router.push({ path: "/partners/" + item.id });
-    },
-    batchImport() {},
     loadData(conds = []) {
       this.conds = conds || [];
 
@@ -467,6 +438,28 @@ export default {
       });
       // console.log(this.pager.page);
     },
+    loadAccounts() {
+      // this.loading = true;
+      this.$get(
+        "admin/common/account/list",
+        {
+          conds: JSON.stringify([{ k: "role", op: "=", v: [8, 4] }])
+        },
+        res => {
+          console.log(res);
+          // this.loading = false;
+          if (res.code == 0) {
+            const control = this.controls[3];
+            const temp = [];
+            res.data.forEach(ele => {
+              temp.push({ label: ele.name, value: ele.id });
+            });
+            // console.log(temp);
+            control.options = temp;
+          }
+        }
+      );
+    },
     handleSelectionChange(rows) {},
     openForm(type) {
       this.formData = {};
@@ -474,6 +467,7 @@ export default {
       this.controls2 = this.new_controls2;
       this.isAdd = true;
       this.isShow = true;
+      this.loadAccounts();
       // this.loadOptions();
     },
     openModel() {
@@ -494,6 +488,7 @@ export default {
 
       this.isAdd = false;
       this.isShow = true;
+      this.loadAccounts();
       // this.loadOptions();
     },
     deleteItem(item) {

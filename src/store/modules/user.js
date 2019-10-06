@@ -55,6 +55,12 @@ const user = {
     },
     SET_MOBILE: (state, mobile) => {
       state.mobile = mobile;
+    },
+    SET_ROLE: (state, role) => {
+      state.role = role;
+    },
+    SET_ID: (state, id) => {
+      state.id = id;
     }
   },
 
@@ -103,6 +109,8 @@ const user = {
             commit('SET_IS_ADMIN', data.is_admin)
             commit('SET_COMPANY', data.merchant)
             commit('SET_MOBILE', data.mobile)
+            commit('SET_ROLE', data.role)
+            commit('SET_ID', data.id)
             resolve(resp)
           } else {
             reject(resp.message);
