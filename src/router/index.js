@@ -123,13 +123,13 @@ export const constantRouterMap = [
             {
                 path: 'devices',
                 name: 'devices',
-                component: () => import('@/pages/stats/index'),
+                component: () => import('@/pages/devices/index'),
                 meta: { title: '设备列表' },
                 children: [
                     {
                         path: '',
                         // name: 'parents-list',
-                        component: () => import('@/pages/stats/list'),
+                        component: () => import('@/pages/devices/list'),
                         // meta: { title: '项目管理' },
                     },
                 ]
