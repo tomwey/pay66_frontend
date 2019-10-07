@@ -1,9 +1,9 @@
 <template>
   <div class="list-wrapper" v-loading="loading">
     <div class="title-bar">
-      <h3 class="title">图文标签</h3>
+      <h3 class="title">代理提成配置</h3>
       <div class="buttons" v-if="$hasPermission(119,1002)">
-        <el-button type="primary" @click="openForm">添加标签</el-button>
+        <el-button type="primary" @click="openForm">添加提成配置</el-button>
       </div>
     </div>
     <search-controls :controls="searchControls" @search="loadData"></search-controls>
