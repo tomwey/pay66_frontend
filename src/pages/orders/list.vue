@@ -16,27 +16,35 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column label="ID" prop="id" align="center" width="80"></el-table-column>
-        <el-table-column label="名字" prop="name" align="center" width="120"></el-table-column>
-        <el-table-column label="所属商家" prop="merchant.name" align="center" width="120"></el-table-column>
-        <el-table-column label="门店类型" prop="type_name" align="center" width="120"></el-table-column>
-        <el-table-column label="经营范围" align="center" width="120">
-          <template
-            slot-scope="scope"
-          >{{scope.row.category ? (scope.row.category.parent ? scope.row.category.parent.name + '/' + scope.row.category.name : scope.row.category.name) : ''}}</template>
-        </el-table-column>
-        <el-table-column label="联系电话" prop="phone" align="center" width="120"></el-table-column>
-        <el-table-column label="门店地址" prop="address" width="120"></el-table-column>
-        <el-table-column label="备注" prop="memo"></el-table-column>
-        <el-table-column label="创建时间" prop="create_time" width="100"></el-table-column>
-        <el-table-column label="操作" fixed="right" align="center" width="150">
+        <!-- <el-table-column label="ID" prop="id" align="center" width="80"></el-table-column> -->
+        <el-table-column label="订单号" prop="order_no" width="180"></el-table-column>
+        <el-table-column label="订单金额(元)" prop="money" width="120"></el-table-column>
+        <el-table-column label="优惠金额(元)" prop="discount_money" width="100"></el-table-column>
+        <el-table-column label="支付状态" prop="pay_state_name" align="center" width="80"></el-table-column>
+        <el-table-column label="支付方式" prop="pay_type_name" align="center" width="80"></el-table-column>
+        <el-table-column label="商家/门店/设备" width="180">
           <template slot-scope="scope">
-            <el-button
+            <strong>{{scope.row.merchant.name}}</strong>
+            <br />
+            门店: {{scope.row.shop.name}}
+            <br />
+            设备: {{scope.row.device.device_type}}
+          </template>
+        </el-table-column>
+        <el-table-column label="收银员" align="center" prop="operator.name" width="80"></el-table-column>
+        <el-table-column label="付款人" prop="buyer_id" width="150"></el-table-column>
+        <el-table-column label="交易时间" prop="pay_time" width="100"></el-table-column>
+        <el-table-column label="创建时间" prop="create_time" width="100"></el-table-column>
+        <el-table-column label="交易失败描述" prop="error_memo" width="120"></el-table-column>
+        <el-table-column label="备注" prop="memo"></el-table-column>
+        <el-table-column label="操作" fixed="right" align="center" width="100">
+          <template slot-scope="scope">
+            <!-- <el-button
               size="mini"
               v-if="$hasPermission(107,1004)"
               style="margin-bottom: 10px;"
               @click="editItem(scope.row);"
-            >编辑</el-button>
+            >编辑</el-button>-->
             <el-button
               size="mini"
               type="danger"
@@ -73,7 +81,7 @@
     </div>
     <!-- 表单 -->
     <el-dialog
-      :title="isAdd ? '添加门店' : '修改门店'"
+      :title="isAdd ? '创建收款订单' : ''"
       :visible.sync="isShow"
       width="580px"
       :append-to-body="true"
@@ -111,8 +119,8 @@ export default {
       searchControls: [
         {
           type: 1,
-          label: "名字",
-          field: "name",
+          label: "订单号",
+          field: "order_no",
           op: "lk"
         },
         {
@@ -133,87 +141,70 @@ export default {
       },
       controls: [
         {
-          label: "名字",
-          field: "name",
+          label: "订单描述",
+          field: "title",
           type: 1,
-          rules: [{ required: true, message: "名字不能为空", trigger: "blur" }]
+          rules: [
+            { required: true, message: "订单描述不能为空", trigger: "blur" }
+          ]
+        },
+        {
+          label: "用户付款码",
+          field: "_auth_code",
+          type: 1,
+          rules: [
+            { required: true, message: "付款码不能为空", trigger: "blur" }
+          ]
+        },
+        {
+          label: "支付金额(元)",
+          field: "_money",
+          type: 1,
+          subtype: "number",
+          rules: [
+            { required: true, message: "支付金额不能为空", trigger: "blur" }
+          ]
+        },
+        {
+          label: "优惠金额(元)",
+          field: "_discount_money",
+          type: 1,
+          subtype: "number",
+          rules: []
         },
         {
           label: "所属商家",
           field: "merchant_id",
           type: 2,
           options: [],
+          changeFunc: (control, val) => {
+            console.log(val);
+            // this.formData["shop_id"] = "";
+            this.$set(this.formData, "device_id", null);
+            this.$set(this.formData, "operator_id", null);
+            this.loadDevices(val);
+            this.loadOperators(val);
+          },
           rules: [
             { required: true, message: "所属商家不能为空", trigger: "change" }
           ]
         },
         {
-          label: "门店类型",
-          field: "_type",
+          label: "所属设备",
+          field: "device_id",
           type: 2,
-          options: [
-            {
-              label: "直营",
-              value: 1
-            },
-            {
-              label: "加盟",
-              value: 2
-            }
-          ],
-          rules: [
-            { required: true, message: "门店类型不能为空", trigger: "change" }
-          ]
-        },
-        {
-          label: "经营范围",
-          field: "scope",
-          type: 21,
           options: [],
-          props: {},
-          changeFunc: val => {
-            console.log(val);
-            // this.loadStudents(val);
-            this.loadCategories(val);
-          },
           rules: [
-            { required: true, message: "经营范围不能为空", trigger: "change" }
+            { required: true, message: "所属设备不能为空", trigger: "change" }
           ]
         },
         {
-          label: "门头照片",
-          field: "outer_images",
-          type: 8,
-          accept: ".jpg,.png,.gif,.jpeg",
-          limit: 5,
+          label: "所属业务员",
+          field: "operator_id",
+          type: 2,
+          options: [],
           rules: [
-            { required: true, message: "门头照片不能为空", trigger: "blur" }
-          ]
-        },
-        {
-          label: "店内照片",
-          field: "inner_images",
-          type: 8,
-          accept: ".jpg,.png,.gif,.jpeg",
-          limit: 5,
-          rules: [
-            // { required: true, message: "店内照片不能为空", trigger: "blur" }
-          ]
-        },
-        {
-          label: "联系电话",
-          field: "phone",
-          type: 1,
-          rules: [
-            { required: true, message: "联系电话不能为空", trigger: "blur" }
-          ]
-        },
-        {
-          label: "门店地址",
-          field: "address",
-          type: 1,
-          rules: [
-            { required: true, message: "门店地址不能为空", trigger: "blur" }
+            { required: true, message: "所属业务员不能为空", trigger: "change" }
           ]
         },
         {
@@ -243,7 +234,9 @@ export default {
         params.conds = JSON.stringify(this.conds);
       }
 
-      this.$get("admin/common/shop/list", params, res => {
+      params["sorts"] = JSON.stringify([{ k: "created_at", v: "desc" }]);
+
+      this.$get("admin/common/order/list", params, res => {
         // console.log(res);
         this.loading = false;
         if (res.code == 0) {
@@ -253,57 +246,13 @@ export default {
       });
       // console.log(this.pager.page);
     },
-    loadCategories(val = null, cb = null) {
-      if (val && !Array.isArray(val)) {
-        return;
-      }
-      let pid = null;
-      if (val && val.length > 0) {
-        pid = val[0];
-      }
-      // console.log(val);
-      this.$get(
-        "admin/common/category/list",
-        { conds: JSON.stringify([{ k: "pid", op: "=", v: pid }]) },
-        res => {
-          console.log(res);
-          this.loading = false;
-          if (res.code == 0) {
-            // this.list = res.data;
-            // this.pager.totalSize = res.total || 0;
-            if (pid) {
-              const arr = this.controls[3].options;
-              let temp = [];
-              res.data.forEach(ele => {
-                temp.push({ label: ele.name, value: ele.id });
-              });
-              for (let i = 0; i < arr.length; i++) {
-                if (arr[i].value == pid) {
-                  arr[i].children = temp;
-                  break;
-                }
-              }
-            } else {
-              let temp = [];
-              res.data.forEach(ele => {
-                temp.push({ label: ele.name, value: ele.id, children: [] });
-              });
-              this.controls[3].options = temp;
-            }
-          }
-          if (cb) {
-            cb();
-          }
-        }
-      );
-    },
     search() {
       this.loadData();
     },
     handleSelectionChange(rows) {},
     openForm(type) {
       this.formData = {};
-      this.loadCategories();
+      // this.loadCategories();
       this.loadMerchants();
       this.isAdd = true;
       this.isShow = true;
@@ -319,9 +268,49 @@ export default {
           res.data.forEach(ele => {
             temp.push({ label: ele.name, value: ele.id });
           });
-          this.controls[1].options = temp;
+          this.controls[4].options = temp;
         }
       });
+    },
+    loadDevices(val) {
+      console.log(val);
+      this.$get(
+        "admin/common/device/list",
+        { conds: JSON.stringify([{ k: "merchant_id", op: "=", v: val }]) },
+        res => {
+          console.log(res);
+          this.loading = false;
+          if (res.code == 0) {
+            // this.list = res.data;
+            // this.pager.totalSize = res.total || 0;
+            let temp = [];
+            res.data.forEach(ele => {
+              temp.push({ label: ele.device_type, value: ele.id });
+            });
+            this.controls[5].options = temp;
+          }
+        }
+      );
+    },
+    loadOperators(val) {
+      // console.log(val);
+      this.$get(
+        "admin/common/merch_account/list",
+        { conds: JSON.stringify([{ k: "merchant_id", op: "=", v: val }]) },
+        res => {
+          console.log(res);
+          this.loading = false;
+          if (res.code == 0) {
+            // this.list = res.data;
+            // this.pager.totalSize = res.total || 0;
+            let temp = [];
+            res.data.forEach(ele => {
+              temp.push({ label: ele.name, value: ele.id });
+            });
+            this.controls[6].options = temp;
+          }
+        }
+      );
     },
     openModel() {
       // this.$refs.commForm.clearValidates();
@@ -329,17 +318,6 @@ export default {
     },
     editItem(item) {
       this.formData = Object.assign({}, item);
-      this.loadCategories(null, () => {
-        if (this.formData.category && this.formData.category.parent) {
-          this.loadCategories([this.formData.category.parent.id]);
-          // this.controls[3].changeFunc([this.formData.category.parent.id]);
-          this.formData["scope"] = [
-            this.formData.category.parent.id,
-            parseInt(this.formData.scope)
-          ];
-        }
-      });
-
       // console.log(this.formData);
       this.loadMerchants();
       this.isAdd = false;
@@ -353,7 +331,7 @@ export default {
       })
         .then(() => {
           this.loading = true;
-          this.$post("admin/common/shop/delete", { ids: item.id }, res => {
+          this.$post("admin/common/order/delete", { ids: item.id }, res => {
             this.loading = false;
             if (res.code == 0) {
               this.$message({
@@ -376,13 +354,13 @@ export default {
     },
     doCommit() {
       const params = Object.assign({}, this.formData);
-      params["scope"] = this.formData.scope[1];
+      // params["scope"] = this.formData.scope[1];
       console.log(params);
       // return;
 
       this.commiting = true;
       this.$post(
-        "admin/common/shop/save",
+        "admin/common/order/save",
         {
           id: this.formData.id,
           payload: JSON.stringify(params)
