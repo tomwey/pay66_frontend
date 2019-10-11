@@ -13,6 +13,9 @@ const user = {
     mobile: '',
     is_admin: false,
     configs: {},
+    role: null,
+    role_name: null,
+    parent: null,
     // roles: []
   },
 
@@ -61,6 +64,11 @@ const user = {
     },
     SET_ID: (state, id) => {
       state.id = id;
+    },
+    SET_OTHER_INFO: (state, data) => {
+      state.role = data.role;
+      state.role_name = data.role_name;
+      state.parent = data.parent;
     }
   },
 
@@ -107,10 +115,11 @@ const user = {
             commit('SET_AVATAR', data.avatar)
             commit('SET_PERMISSIONS', data.permissions || [])
             commit('SET_IS_ADMIN', data.is_admin)
-            commit('SET_COMPANY', data.merchant)
+            commit('SET_COMPANY', data.company)
             commit('SET_MOBILE', data.mobile)
             commit('SET_ROLE', data.role)
             commit('SET_ID', data.id)
+            commit('SET_OTHER_INFO', data);
             resolve(resp)
           } else {
             reject(resp.message);

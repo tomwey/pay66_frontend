@@ -1,5 +1,123 @@
 <template>
-  <div class="dashboard"></div>
+  <div class="dashboard">
+    <div class="left">
+      <div class="total-stats">
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon merchant">
+              <i class="iconfont icon-merchant"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">商户数</div>
+              <div class="value">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon shop">
+              <i class="iconfont icon-shop"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">门店数/设备数</div>
+              <div class="value">0 / 0</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon order">
+              <i class="iconfont icon-order"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">总订单</div>
+              <div class="value">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon money1">
+              <i class="iconfont icon-money1"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">总流水</div>
+              <div class="value">
+                <span class="unit">¥</span>0.00
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon money2">
+              <i class="iconfont icon-money2"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">总佣金</div>
+              <div class="value">
+                <span class="unit">¥</span>0.00
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- </div>
+        <div class="today-stats">-->
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon today-order">
+              <i class="iconfont icon-order"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">今日订单</div>
+              <div class="value">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon today-money">
+              <i class="iconfont icon-money1"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">今日流水</div>
+              <div class="value">
+                <span class="unit">¥</span>0.00
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-inner">
+            <div class="icon today-earn">
+              <i class="iconfont icon-money2"></i>
+            </div>
+            <div class="stat-item">
+              <div class="name">今日佣金</div>
+              <div class="value">
+                <span class="unit">¥</span>0.00
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="company box">
+        <img :src="$store.state.user.company.logo_url" />
+        <h2 class="brand">{{$store.state.user.company.brand}}</h2>
+        <div class="name">{{$store.state.user.company.name}}</div>
+      </div>
+      <div class="box">
+        <h2>当前登录账号</h2>
+        <div class="account">
+          <p>账号名字: {{$store.state.user.name}}</p>
+          <p>登录手机: {{$store.state.user.mobile}}</p>
+          <p>账号角色: {{$store.state.user.is_admin ? '超级管理员' : $store.state.user.role_name}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import clip from "@/utils/clipboard";
@@ -41,6 +159,7 @@ export default {
     // this.loadSalaries();
     // this.loadJobs();
     // this.drawSalaryBar();
+    console.log(this.$store.state.user);
   },
   methods: {
     drawJobBar() {
@@ -293,204 +412,108 @@ export default {
   width: 100%;
   min-height: 640px;
 
-  .company-panel {
-    margin-bottom: 15px;
+  display: flex;
+  .left {
+    flex: 1;
+  }
 
-    .base-info {
-      // line-height: 50px;
-      .logo {
-        max-width: 48px;
-        border-radius: 50%;
+  .right {
+    flex: 0 0 210px;
+    // padding-left: 15px;
+    width: 210px;
+    box-sizing: content-box;
+    .box {
+      background: #fff;
+      h2 {
+        font-size: 16px;
+        color: #333;
+        padding: 15px;
+        border-bottom: 1px solid #f2f2f2;
       }
-      .names {
-        display: inline-block;
-        margin-left: 10px;
-        .title {
-          margin: 0;
-          padding: 0;
-          font-size: 16px;
-          height: 30px;
-          line-height: 30px;
-          // margin-bottom: 10px;
-          color: #333;
-        }
-        .name,
-        .address {
-          font-size: 14px;
-          line-height: 14px;
-          color: #888;
-          margin: 0;
-        }
+    }
+    .account {
+      padding: 0 15px 10px;
+      p {
+        margin: 10px 0;
+        font-size: 14px;
+        color: #333;
+      }
+    }
+    .company {
+      padding: 20px;
+      text-align: center;
+      h2 {
+        border-bottom: 0;
+        padding: 0;
+        margin: 10px;
+      }
+      img {
+        width: 70px;
+        height: 70px;
+        border-radius: 60px;
+      }
+      .name {
+        font-size: 12px;
+        color: #999;
       }
     }
   }
+}
 
-  .stat-box {
-    display: inline-block;
-    width: 20%;
-    // border-right: 1px solid #f2f2f2;
-    // padding: 0 20px;
-    &:last-child {
-      border-right: 0;
-    }
+.total-stats,
+.today-stats {
+  display: flex;
+  flex-wrap: wrap;
+  .stat {
+    flex: 0 0 25%;
+    // width: 280px;
 
-    &.users {
-      i {
-        color: #333;
-        font-size: 52px !important;
-      }
-    }
-    &.approved {
-      i {
-        color: #409eff;
-        font-size: 52px !important;
-      }
+    .stat-inner {
+      background: #fff;
+      padding: 15px;
+      margin-right: 15px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
     }
 
-    &.checkined {
-      i {
-        color: rgb(98, 168, 58) !important;
-        font-size: 52px !important;
-      }
-    }
-
-    &.total-salary {
-      i {
-        color: #f56c6c;
-      }
-    }
-
-    &.unpayed-salary {
-      i {
-        color: #e6a23c;
-      }
-    }
-
-    .icon,
-    .stat {
-      display: inline-block;
-    }
-
-    .icon {
-      // width: 60px;
-      margin-right: 10px;
-      i {
-        font-size: 44px;
-      }
-    }
-    .stat {
-      text-align: left;
-      // width: 68%;
-      .value {
-        font-size: 20px;
-        font-weight: 600;
-        color: #333;
-        .unit {
-          font-size: 14px;
-          padding-right: 5px;
-        }
-      }
-      .label {
-        font-size: 12px;
-        color: #888;
-      }
-    }
-  }
-
-  .salary-stats {
-    margin-top: 15px;
-    .salary-box {
-      display: inline-block;
-      width: 33.333333%;
-      padding-right: 15px;
-      .label {
-        font-size: 12px;
-        color: #888;
-        margin-bottom: 5px;
+    // box-shadow: 0 0 3px ;
+    .stat-item {
+      flex: 1;
+      text-align: right;
+      .name {
+        font-size: 14px;
+        color: #999;
       }
       .value {
         font-size: 18px;
         color: #333;
-        font-weight: 600;
+        font-weight: 700;
+        margin-top: 5px;
+        padding-right: 2px;
         .unit {
           font-size: 12px;
-          padding-right: 5px;
-          // font-weight: normal;
+          color: #333;
+          font-weight: normal;
+          padding-right: 3px;
         }
       }
     }
-  }
-
-  .other-panel {
-    margin-top: 15px;
-  }
-
-  .salaries-panel {
-    margin-top: 20px;
-  }
-
-  .company-wrapper {
-    .company {
-      text-align: center;
-      .logo {
-        width: 58px;
-        height: 58px;
-        border-radius: 50%;
-      }
-      .name {
-        font-size: 16px;
-        color: #333;
-        margin: 0;
-        margin: 10px 0;
-      }
-      .comp-name {
-        font-size: 12px;
-        color: #888;
-        margin: 0;
-      }
-    }
-
-    .account-info {
-      p {
-        margin: 0;
-        font-size: 14px;
-        padding-bottom: 10px;
-      }
-    }
-
-    .homepage {
-      text-align: center;
-      img {
-        max-width: 100%;
-      }
-      .scan-text {
-        margin: 0;
-        padding: 10px;
-        font-size: 14px;
-        color: #888;
-        margin-bottom: 10px;
-      }
-    }
-  }
-
-  .graph-box {
-    width: 100%;
-    height: 300px;
-  }
-
-  .box-card {
-    .title {
-      display: inline-block;
+    .icon {
+      flex: 0 0 40px;
+      // padding: 20px;
+      background: rgb(102, 157, 252);
       height: 40px;
       line-height: 40px;
+      width: 40px;
+      text-align: center;
+      border-radius: 40px;
+      color: #fff;
+      i {
+        font-size: 22px;
+        // font-weight: 700;
+      }
     }
-    .filter-section {
-      float: right;
-    }
-  }
-
-  #today-apply-graph {
-    height: 400px;
   }
 }
 </style>
