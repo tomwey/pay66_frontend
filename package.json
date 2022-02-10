@@ -33,7 +33,7 @@
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "js-md5": "^0.7.3",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "path-to-regexp": "2.4.0",
     "quill-image-extend-module": "^1.1.2",
     "sass-loader": "^7.1.0",
